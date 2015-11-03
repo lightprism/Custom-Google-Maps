@@ -9,6 +9,7 @@
         animation: google.maps.Animation.DROP,
         disableDefaultUI: false,
         scrollwheel: true,
+        draggable: true,
         // maxZoom: 11,
         // minZoom: 9,
         zoomControlOptions: {

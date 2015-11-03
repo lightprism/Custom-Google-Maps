@@ -24,7 +24,8 @@
             },
 
             addMarker: function(options) {
-                var marker;
+                var marker,
+                    self = this;
                 options.position = {
                     lat: options.lat,
                     lng: options.lng
@@ -34,12 +35,8 @@
                     this.markerClusterer.addMarker(marker);
                 }
                 this._addMarker(marker);
-                if(options.event) {
-                    this._on({
-                        obj: marker,
-                        event: options.event.name,
-                        callback: options.event.callback
-                    });
+                if(options.events) {
+                    this._attachEvents(marker, options.events);
                 }
                 if(options.content) {
                     this._on({
@@ -56,6 +53,16 @@
                 }
                 return marker;
             },
+            _attachEvents: function(object, events) {
+                var self = this;
+                events.forEach(function(event) {
+                    self._on({
+                        obj: object,
+                        event: event.name,
+                        callback: event.callback
+                    });
+                });
+            },
 
             _addMarker: function(marker) {
                 this.markers.add(marker);
@@ -66,9 +73,15 @@
             },
 
             removeBy: function(callback) {
-                this.markers.find(callback, function(markers) {
+                var self = this;
+                self.markers.find(callback, function(markers) {
                     markers.forEach(function(marker) {
-                        marker.setMap(null);
+                        if(self.markerClusterer) {
+                            self.markerClusterer.removeMarker(marker);
+                        } else {
+                            marker.setMap(null);
+                        }
+
                     });
                 });
             },
